@@ -1,0 +1,48 @@
+#!/bin/bash
+echo "File cần biên dịch là $1"
+urldecode()
+{
+     # Usage: urldecode "string"
+        #: "${1//%3/}"
+        #printf '%b\n' "${_//%2E/\.}"
+    local url_encoded="${1//&/ }"
+    printf '%b\n' "${url_encoded//%/\\x}"
+}
+#strip_all()
+#{
+     # Usage: strip_all "string" "pattern"
+#       printf '%s\n' "${1//$2}"
+#}
+i=0
+for linedelete in $(cat "$1")
+do
+        #strip_all "$linedelete" "[%3]"
+        #echo "chuỗi gốc $linedelete"
+        echo "Sau khi biên dịch"
+        #urldecode "$linedelete"
+        A="$linedelete"
+        A="${A//%3/}"
+        A="${A//%2E/.}"
+        A="${A//&/ }"
+        A="${A//%2D/-}"
+        A="${A//%20/ }"
+        A="${A//%3A/:}"
+        A="${A//%28/(}"
+        A="${A//%29/)}"
+        A="${A//%5B/[}"
+        A="${A//%5D/]}"
+        A="${A//%5F/_}"
+        A="${A//%3D/=}"
+        echo "$A"
+        echo "IP là:"
+        B="$(cut -d'&' -f3 <<<"$linedelete")"
+        B="${B//%3/}"
+        B="${B//%2E/.}"
+        IP[$i]="$B"
+        echo "${IP[$i]}"
+        i=`expr $i + 1`
+done
+echo "Toàn bộ ip đọc được từ file"
+echo "${IP[@]}"
+
+exit 0

@@ -1,0 +1,27 @@
+#! /bin/bash
+
+#i=1
+if [ $# -eq 0 ]
+then
+ echo "Lỗi- Vui lòng nhập file bài tập cần nộp"
+exit 1
+fi
+echo "$1"
+echo "$2"
+cp $1 $2 /root/baitaplinux
+TODAY=`date +"%H:%M %d-%m-%Y"`
+
+echo "$USER $TODAY NOP BAI $1 $2" >> /root/baitaplinux/log.txt
+
+#while [ $i -lt $# ]
+#do
+#       #cp -rf $i /root/baitaplinux
+#       echo "$i"
+#       echo "Nộp bài '$i' thành công "
+#       #echo '$i' >> /root/baitaplinux/log.txt
+#       #A="Bai da nop la "
+#       #A+="$i"
+#       i=`expr $i + 1`
+#done
+
+exit 0

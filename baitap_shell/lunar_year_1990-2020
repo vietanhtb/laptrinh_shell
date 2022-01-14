@@ -1,0 +1,41 @@
+#! /bin/bash
+
+echo "Danh sach nam 1990-2020"
+i=1990
+echo "Năm       Ten năm âm lịch"
+while [ $i -le 2020 ]
+do
+        can=`expr $i % 10`
+        case $can in
+        0)a="Canh";;
+        1)a="Tân";;
+        2)a="Nhâm";;
+        3)a="Quý";;
+        4)a="Giáp";;
+        5)a="Ất";;
+        6)a="Bính";;
+        7)a="Đinh";;
+        8)a="Mậu";;
+        9)a="Kỷ";;
+        esac
+        chi=`expr $i % 12`
+        case $chi in
+        0)b="Thân";;
+        1)b="Dậu";;
+        2)b="Tuất";;
+        3)b="Hợi";;
+        4)b="Tý";;
+        5)b="Sửu";;
+        6)b="Dần";;
+        7)b="Mão";;
+        8)b="Thìn";;
+        9)b="Tỵ";;
+        10)b="Ngọ";;
+        11)b="Mùi";;
+        esac
+
+echo "$i        $a $b"
+i=`expr $i + 1`
+done
+
+exit 0

@@ -1,0 +1,102 @@
+#! /bin/bash
+
+echo "File cần đọc log là $1"
+rm -f ip.text
+#csf -r
+echo "Quá trình biên dịch log"
+echo "Log được biên dịch như sau"
+i=0
+for linedelete in $(cat "/root/log_test")
+do
+        #strip_all "$linedelete" "[%3]"
+        #echo "Chuỗi gốc $linedelete"
+        #echo "Sau khi biên dịch"
+        #urldecode "$linedelete"
+        echo ""
+        A="$linedelete"
+        A="${A//%3/}"
+        A="${A//%2E/.}"
+        A="${A//&/ }"
+        A="${A//%2D/-}"
+        A="${A//%20/ }"
+        A="${A//%3A/:}"
+        A="${A//%28/(}"
+        A="${A//%29/)}"
+        A="${A//%5B/[}"
+        A="${A//%5D/]}"
+        A="${A//%5F/_}"
+        A="${A//%3D/=}"
+        echo "$A"
+        B="$(cut -d'&' -f3 <<<"$linedelete")"
+        B="${B//%3/}"
+        B="${B//%2E/.}"
+        i=`expr $i + 1`
+        echo "$B" >> /root/ip.text
+done
+grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+" ip.text | sort | uniq -c > /root/IPrangecount.text
+grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+" ip.text | sort | uniq -c > $1/ipcount.text
+echo ""
+echo ""
+echo ""
+echo "Quá trình kiểm tra và chặn ip"
+echo ""
+echo ""
+echo "Danh sách ip và số lần xuất hiện của chúng"
+echo "Truy cập                  IP"
+grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+" ipcount.text | sort -nrk 1 ipcount.text | uniq -c | awk '{print $2"                        "$3}'
+
+echo ""
+echo ""
+echo "Danh sách dải ip và số lần xuất hiện của chúng"
+echo "Truy cập                  Dải IP"
+grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+" IPrangecount.text | sort -nrk 1 IPrangecount.text | uniq -c | awk '{print $2"                        "$3}'
+
+#sort -nrk 1 $1/IPrangecount.text
+
+
+#chan ip
+#PATH="/root/ipcount.text"
+file="/root/IPrangecount.text"
+#echo "File cần biên dịch là $file "
+t=1
+for linedelete in $(cat "$file")
+do
+        #echo "dong $t"
+        #echo "$linedelete"
+        IP[$t]="$linedelete"
+        t=`expr $t + 1`
+done
+
+#rm -f $1/logblockIprange.text
+j=1
+TODAY=`date +"%H:%M %d-%m-%Y"`
+for phantu in "${IP[@]}"
+do
+        if [ `expr $j % 2` -eq 1 ]
+        then
+                #echo "Dải ip ${IP[j+1]} có số lần truy cập là $phantu"
+                if [ "$phantu" -ge 15 ]
+                        then
+                        echo "Dải ip ${IP[j+1]}.0/24 cần phải chặn do có dấu hiệu đáng nghi (Truy cập trên 15 lần cụ thể là $phantu)"
+                        echo ""
+                        echo ""
+                        echo "Bắt đầu chặn ${IP[j+1]}.0/24"
+                        D="${IP[j+1]}.0"
+                        csf -td $D/24 60 -d inout "block $D connections for 180s"
+                        echo "$TODAY                                    Chặn $D trong 180s" >> /root/logblockIprange.text
+
+ echo ""
+                #else
+                        #echo "Dải ip ${IP[j+1]}.0/24 có số lượng truy cập bình thường là"
+                fi
+        #else
+                #echo ""
+        fi
+                j=`expr $j + 1`
+done
+echo "Danh sách các dải IP duyệt được và đang trong quá trình chặn tạm thời là"
+csf -t
+
+exit 0
+
+

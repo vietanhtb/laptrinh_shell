@@ -1,0 +1,8 @@
+#! /bin/bash
+
+echo "Thư mục muốn kiểm tra là $1"
+echo "Danh sách các file có quyền đọc ghi và thực thi là:"
+ls -la $1 | grep "^-" | grep "rwx"
+
+exit 0
+~

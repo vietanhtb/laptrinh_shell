@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo " Nhap vao so a la:"
+read a
+echo " Nhap vao so b la:"
+read b
+
+echo " Tong 2 so la =`expr $a + $b`"
+
+exit 0

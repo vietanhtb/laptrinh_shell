@@ -1,0 +1,10 @@
+#! /bin/bash
+
+echo "Kiểm tra đường dẫn $1"
+echo "Danh sách các thư mục"
+ls -la $1 | grep "^d"
+
+echo "Danh sách các file"
+ls -la $1 | grep "^-"
+
+exit 0

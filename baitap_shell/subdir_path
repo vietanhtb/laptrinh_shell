@@ -1,0 +1,6 @@
+#! /bin/bash
+
+$1
+find /$1 -type d
+
+exit 0
