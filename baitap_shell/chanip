@@ -6,10 +6,10 @@ rm -f ip.text
 echo "Quá trình biên dịch log"
 echo "Log được biên dịch như sau"
 i=0
-for linedelete in $(cat "/root/log_test")
+for linedelete in $(cat "/root/logtest")
 do
         #strip_all "$linedelete" "[%3]"
-        #echo "Chuỗi gốc $linedelete"
+        #echo "chuỗi gốc $linedelete"
         #echo "Sau khi biên dịch"
         #urldecode "$linedelete"
         echo ""
@@ -34,7 +34,7 @@ do
         echo "$B" >> /root/ip.text
 done
 grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+" ip.text | sort | uniq -c > /root/IPrangecount.text
-grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+" ip.text | sort | uniq -c > $1/ipcount.text
+grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+" ip.text | sort | uniq -c > /root/ipcount.text
 echo ""
 echo ""
 echo ""
@@ -74,29 +74,27 @@ for phantu in "${IP[@]}"
 do
         if [ `expr $j % 2` -eq 1 ]
         then
-                #echo "Dải ip ${IP[j+1]} có số lần truy cập là $phantu"
-                if [ "$phantu" -ge 15 ]
+                #echo "Dải ip ${IP[j+1]} có số lân truy cập là $phantu"
+                if [ "$phantu" -ge 10 ]
                         then
-                        echo "Dải ip ${IP[j+1]}.0/24 cần phải chặn do có dấu hiệu đáng nghi (Truy cập trên 15 lần cụ thể là $phantu)"
+                        echo "Dải ip ${IP[j+1]}.0/24 cần phải chặn do có dấu hiệu đáng nghi (Truy cập trên 10 lần cụ thể là $phantu)"
                         echo ""
                         echo ""
                         echo "Bắt đầu chặn ${IP[j+1]}.0/24"
-                        D="${IP[j+1]}.0"
-                        csf -td $D/24 60 -d inout "block $D connections for 180s"
-                        echo "$TODAY                                    Chặn $D trong 180s" >> /root/logblockIprange.text
-
- echo ""
+ D="${IP[j+1]}.0"
+                        csf -td $D/24 60-d inout "block $D connections for 180s"
+                        echo "$TODAY                                    Chặn $D trong 180s do truy cập quá nhiều (truy cập $phantu)" >> /root/logblockIprange.text
+                        echo ""
+                        echo ""
                 #else
-                        #echo "Dải ip ${IP[j+1]}.0/24 có số lượng truy cập bình thường là"
+                        #echo "Dải ip ${IP[j+1]}.0 có số lượng truy cập bình thường"
                 fi
         #else
                 #echo ""
         fi
                 j=`expr $j + 1`
 done
-echo "Danh sách các dải IP duyệt được và đang trong quá trình chặn tạm thời là"
+echo "Danh sách các dải IP duyệt được và đang trong quá trình chặn tạm thời"
 csf -t
 
 exit 0
-
-
